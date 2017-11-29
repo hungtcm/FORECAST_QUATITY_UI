@@ -1,0 +1,2 @@
+E:\FORECAST_QUATITY_UI\DTO\obj\Debug\DTO.csprojResolveAssemblyReference.cache
+E:\FORECAST_QUATITY_UI\DTO\bin\Debug\DTO.exe.config
