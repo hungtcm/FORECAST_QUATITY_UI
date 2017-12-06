@@ -27,9 +27,9 @@ namespace FORECAST_QUANTITY_DAL
                     {
                         var workSheet = package.Workbook.Worksheets.FirstOrDefault();
 
-                        foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])                        
+                        foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
                             oTbl.Columns.Add(firstRowCell.Text);
-                        
+
                         int rowNumber = 0;
 
                         for (rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
@@ -37,8 +37,8 @@ namespace FORECAST_QUANTITY_DAL
                             var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
                             var newRow = oTbl.NewRow();
 
-                            foreach (var cell in row)                           
-                                newRow[cell.Start.Column -  1] = cell.Text;
+                            foreach (var cell in row)
+                                newRow[cell.Start.Column - 1] = cell.Text;
 
                             oTbl.Rows.Add(newRow);
                         }
@@ -51,6 +51,11 @@ namespace FORECAST_QUANTITY_DAL
             {
                 return null;
             }
+        }
+
+        private void ExcelToDatabase(string path)
+        {
+            DataTable tb = ReadExcel(path);
         }
     }
 }
