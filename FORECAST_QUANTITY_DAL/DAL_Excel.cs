@@ -1,75 +1,55 @@
 ﻿using System;
 using System.Data;
-using xls = Microsoft.Office.Interop.Excel; //import thu vien interop.excel vao de lam viec
 using FORECAST_QUANTITY_DTO;
-using System.Collections.Generic;
-using System.Reflection;
+using OfficeOpenXml;
+using System.IO;
+using System.Linq;
 
 namespace FORECAST_QUANTITY_DAL
 {
     public class DAL_Excel
     {
-        private InfoCustomer Info = new InfoCustomer(); 
+        private InfoCustomer Info = new InfoCustomer();
 
-        private string ReadExcel(string duongdan)
+        private DataTable ReadExcel(string path)
         {
             DataTable oTbl = new DataTable();
+            var temp = Info.GetType().GetProperties(); // get property infocustomer
 
-            xls.Application ExcelApp = new xls.Application();
-            var temp = Info.GetType().GetProperties();
+            foreach (var item in temp)
+                oTbl.Columns.Add(item.Name, item.GetType());
 
             try
             {
-                ExcelApp.Workbooks.Open(duongdan);
-                List<string> columns = new List<string>();
-                //oTbl.Columns.Add(, typeof(string));//tao mot cot ten la MA_DDO co kieu du lieu string
-                //oTbl.Columns.Add("B", typeof(string));
-                //oTbl.Columns.Add("C", typeof(string));
-                //oTbl.Columns.Add("D", typeof(string));
-                //oTbl.Columns.Add("E", typeof(string));
-
-                foreach (var item in temp)
+                using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
                 {
-                    oTbl.Columns.Add(item.Name,item.GetType());
-                }
-
-                //doc du lieu tung sheet cua excel
-                foreach (xls.Worksheet WSheet in ExcelApp.Worksheets)
-                {
-                    #region content
-
-                    //tao mot datarow de lay du lieu cho tung cell
-                    DataRow dr = oTbl.NewRow();//dataRow co kieu du lieu cung voi oTbl
-                                               //bien i de doc tung dong trong sheet
-                    long i = 2;
-
-                    do
+                    if (package.Workbook.Worksheets.Count > 0)
                     {
-                        if (WSheet.Range["A" + i].Value == null && WSheet.Range["B" + i].Value == null && WSheet.Range["C" + i].Value == null && WSheet.Range["D" + i].Value == null && WSheet.Range["E" + i].Value == null)
+                        var workSheet = package.Workbook.Worksheets.FirstOrDefault();
+
+                        foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])                        
+                            oTbl.Columns.Add(firstRowCell.Text);
+                        
+                        int rowNumber = 0;
+
+                        for (rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
                         {
-                            break;//neu tro den dong cuoi cung cua sheet thi dung lai
+                            var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
+                            var newRow = oTbl.NewRow();
+
+                            foreach (var cell in row)                           
+                                newRow[cell.Start.Column -  1] = cell.Text;
+
+                            oTbl.Rows.Add(newRow);
                         }
-                        dr = oTbl.NewRow();//DataRow co kieu du lieu cung voi oTbl
-                        dr["A"] = WSheet.Range["A" + i].Value;
-                        dr["B"] = WSheet.Range["B" + i].Value;
-                        dr["C"] = WSheet.Range["C" + i].Value;
-                        dr["D"] = WSheet.Range["D" + i].Value;
-                        dr["E"] = WSheet.Range["E" + i].Value;
-                        oTbl.Rows.Add(dr);
-                        i++;
                     }
-                    while (true);
-
-
-                    #endregion
                 }
 
-
-                return "";
+                return oTbl;
             }
             catch (Exception ex)
             {
-                return ex.ToString();
+                return null;
             }
         }
     }
