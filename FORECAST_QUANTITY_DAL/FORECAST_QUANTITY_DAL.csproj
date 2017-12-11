@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectToOracle.cs" />
     <Compile Include="DAL_Excel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
