@@ -62,7 +62,6 @@ namespace FORECAST_QUATITY_UI
         }
 
         
-
         #endregion
 
     }

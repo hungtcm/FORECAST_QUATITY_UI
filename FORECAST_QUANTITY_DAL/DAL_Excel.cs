@@ -56,6 +56,12 @@ namespace FORECAST_QUANTITY_DAL
         private void ExcelToDatabase(string path)
         {
             DataTable tb = ReadExcel(path);
+            
+            //Datatable to Oracle
+             
+
+
+            //
         }
     }
 }
