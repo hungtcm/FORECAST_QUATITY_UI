@@ -1,35 +1,24 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
-using ExcelDataReader;
+using FORECAST_QUANTITY_BLL;
+
 
 
 namespace FORECAST_QUATITY_UI
 {
     public partial class frm_sanluong_hangthang : Form
     {
-        
-        private DataTable oTbl; //tao mot bang tam de chua du lieu lay tu file excel vao
-        
-        DataSet result = new DataSet();
-        //method doc du lieu tu file excel vao datatable oTbl
+        public Bus bus = new Bus();
 
         public frm_sanluong_hangthang()
         {
             InitializeComponent();
         }
-    
+
         private void btn_capnhat_Click(object sender, EventArgs e)
         {
-            //truyen du lieu vao datagrid
-            if (oTbl != null)
-            {
-                dtg_excel.DataSource = oTbl;
-            }
-            else
-            {
-                MessageBox.Show("Khong co du lieu");
-            }
+            bus.ExcelToDatabase(txt_duongdan.Text);
         }
 
         private void btn_thoat_Click(object sender, EventArgs e)
@@ -61,7 +50,7 @@ namespace FORECAST_QUATITY_UI
 
         }
 
-        
+
         #endregion
 
     }
